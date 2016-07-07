@@ -107,11 +107,11 @@ bool PreStartScene::init()
     
 }
 
-
 void PreStartScene::startGame(float dt)
 {
 
     Scene *pScene = GameScene::createScene();
+    GameScene::setGameType(E_ONLINE);
     Director::getInstance()->pushScene(pScene);
     
 }

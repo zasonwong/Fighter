@@ -10,6 +10,7 @@
 #include "Constants.h"
 #include "json.h"
 #include "PomeloNetwork.hpp"
+#include "User.hpp"
 
 static int handler_id;
 
@@ -88,7 +89,12 @@ void connectCallback(pc_client_t* client, int ev_type, void* ex_data, const char
     
     if (PC_EV_CONNECTED == ev_type) {
         
-        pc_request_with_timeout(client, "gate.gateHandler.queryEntry", "{\"uid\":\"zaza\"}", ex_data, TIMEOUT, requestCallback);
+//        "{\"uid\":\"zaza\"}"
+        
+        Json::Value value;
+        value["uid"] = User::getInstance()->nickName;
+        std::string str = value.toStyledString();
+        pc_request_with_timeout(client, RouteGateEnter, str.c_str(), ex_data, TIMEOUT, requestCallback);
         
     }else if(PC_EV_USER_DEFINED_PUSH == ev_type){//推送
         

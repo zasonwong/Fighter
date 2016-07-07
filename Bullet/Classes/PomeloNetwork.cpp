@@ -72,11 +72,6 @@ void PomeloNetwork::request(const char* route, const char* msg, const char* extr
     pc_request_with_timeout(client, route, msg, (void *)extraData, TIMEOUT, requestCallback);
 }
 
-void PomeloNetwork::request(const char* route, std::string msg, const char* extraData)
-{
-    pc_request_with_timeout(client, route, msg.c_str(), (void *)extraData, TIMEOUT, requestCallback);
-}
-
 void PomeloNetwork::disconnect()
 {
     if (!client) {
@@ -95,8 +90,13 @@ void connectCallback(pc_client_t* client, int ev_type, void* ex_data, const char
     
     if (PC_EV_CONNECTED == ev_type) {
         
-        std::string str = "{\"username\":\"zaza\",\"rid\":\"foo\"}";
-        PomeloNetwork::getInstance()->request("connector.entryHandler.enter", str.c_str(), ExtraDataConnect);
+        //std::string str = "{\"username\":\"zaza\",\"rid\":\"foo\"}";
+        
+        Json::Value value;
+        value["username"] = User::getInstance()->nickName;
+        value["rid"] = "foo";
+        
+        PomeloNetwork::getInstance()->request(RouteConnectorEnter, value.toStyledString().c_str(), ExtraDataConnect);
         
     }else if(PC_EV_USER_DEFINED_PUSH == ev_type){//推送
     

@@ -13,13 +13,23 @@
 #include "cocos2d.h"
 #include "Player.hpp"
 
+typedef enum{
+
+    E_SINGLE,
+    E_ONLINE
+    
+}eGameType;
+
 class GameScene : public cocos2d::Layer
 {
 public:
     
+    eGameType gameType;
+    
     static cocos2d::Scene* createScene();
     
     virtual bool init();
+    virtual void update(float delta);
     
     CREATE_FUNC(GameScene);
     
@@ -32,8 +42,9 @@ public:
     void startGame();
     
     static GameScene* pInstance;
-    
     static void onUpdatePosition(float x, float y);
+    
+    static void setGameType(eGameType type){ pInstance -> gameType = type; };
     
 private:
     
@@ -41,12 +52,20 @@ private:
 
     Player *playerA; // 玩家A飞机
     Player *playerB; // 玩家B飞机
+    
+    cocos2d::Sprite *bullet;
+    
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;
+    int bulletSpeed;
     
     GameScene();
     void loadPlayer();
     void loadBackground();
+    void loadBullet();
+    void fireBullet();
+    void resetBullet();
+    
     cocos2d::Vec2 limitPosition(cocos2d::Vec2 newPos);
     
 };

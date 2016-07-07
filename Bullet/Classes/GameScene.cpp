@@ -25,7 +25,10 @@ GameScene::GameScene():
 countDown(COUNT_DOWN),
 playerA(NULL),
 visibleSize(Size::ZERO),
-origin(Vec2::ZERO)
+origin(Vec2::ZERO),
+bullet(NULL),
+bulletSpeed(0),
+gameType(E_SINGLE)
 {
     
 }
@@ -37,6 +40,8 @@ Scene* GameScene::createScene()
     
     // 'layer' is an autorelease object
     auto layer = GameScene::create();
+
+    pInstance = layer;
     
     // add layer as a child to scene
     scene->addChild(layer);
@@ -53,23 +58,14 @@ bool GameScene::init()
     {
         return false;
     }
-    
-    pInstance = this;
+
+    bulletSpeed = 15;
     
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
 
     CCLOG("Origin:(%f, %f), Visible size: (%f, %f)", origin.x, origin.y, visibleSize.width, visibleSize.height);
     
-    auto listener = EventListenerTouchOneByOne::create();
-    
-    listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
-    listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
-    listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
-    
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-    
-
     //sprite batch
     SpriteBatchNode *spriteBatch = SpriteBatchNode::create("gameArts.png");
     this->addChild(spriteBatch);
@@ -103,7 +99,6 @@ bool GameScene::init()
     return true;
 }
 
-
 ///////////private methods
 
 void GameScene::startStep(float dt)
@@ -128,8 +123,18 @@ void GameScene::startStep(float dt)
 
 void GameScene::startGame()
 {
+    
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
+    listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
+    listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
     loadBackground();
     loadPlayer();
+    loadBullet();
+    
+    this->scheduleUpdate();
 }
 
 void GameScene::loadBackground()
@@ -147,20 +152,40 @@ void GameScene::loadBackground()
 void GameScene::loadPlayer()
 {
     
-    playerA = Player::createWithSpriteFrameName("hero_fly_1.png");
-    this->addChild(playerA);
+    if (gameType == E_SINGLE) {
+        
+        playerA = Player::createWithSpriteFrameName("hero_fly_1.png");
+        playerA->setPosition(Vec2(origin.x + visibleSize.width / 2.0f, origin.y + Padding));
+        this->addChild(playerA);
+
+    }else if(gameType == E_ONLINE){
     
-    playerB = Player::createWithSpriteFrameName("hero_fly_1.png");
-    this->addChild(playerB);
+        playerA = Player::createWithSpriteFrameName("hero_fly_1.png");
+        this->addChild(playerA);
+        
+        playerB = Player::createWithSpriteFrameName("hero_fly_1.png");
+        this->addChild(playerB);
+        
+        if (User::getInstance()->isMain) {
+            playerA->setPosition(Vec2(origin.x + visibleSize.width / 4.0f, origin.y + Padding));
+            playerB->setPosition(Vec2(origin.x + visibleSize.width / 4.0f * 3.0f, origin.y + Padding));
+        }else{
+            playerA->setPosition(Vec2(origin.x + visibleSize.width / 4.0f * 3.0f, origin.y + Padding));
+            playerB->setPosition(Vec2(origin.x + visibleSize.width / 4.0f, origin.y + Padding));
+        }
     
-    if (User::getInstance()->isMain) {
-        playerA->setPosition(Vec2(origin.x + visibleSize.width / 4.0f, origin.y + Padding));
-        playerB->setPosition(Vec2(origin.x + visibleSize.width / 4.0f * 3.0f, origin.y + Padding));
-    }else{
-        playerA->setPosition(Vec2(origin.x + visibleSize.width / 4.0f * 3.0f, origin.y + Padding));
-        playerB->setPosition(Vec2(origin.x + visibleSize.width / 4.0f, origin.y + Padding));
     }
+
     
+}
+
+void GameScene::loadBullet()
+{
+    bullet = Sprite::createWithSpriteFrameName("bullet1.png");
+    bullet->setAnchorPoint(Vec2(0.5,0.5));
+    this->addChild(bullet);
+    
+    resetBullet();
 }
 
 Vec2 GameScene::limitPosition(Vec2 newPos)
@@ -184,10 +209,39 @@ Vec2 GameScene::limitPosition(Vec2 newPos)
     return retval;
 }
 
+////////// update
+
+void GameScene::update(float delta)
+{
+    this->fireBullet();
+}
+
+void GameScene::fireBullet()
+{
+    bullet->setPosition(Vec2(bullet->getPositionX(),bullet->getPositionY() + bulletSpeed));
+    
+    if (bullet->getPositionY()>origin.x + visibleSize.height - Padding) {
+        resetBullet();
+    }
+}
+
+void GameScene::resetBullet()
+{
+    bulletSpeed = (460-(playerA->getPositionY() + 50))/15;
+    if (bulletSpeed<5)
+    {
+        bulletSpeed=5;
+    }
+    bullet->setPosition(Vec2(playerA->getPositionX(),playerA->getPositionY()+50));
+}
+
+
 ////////// callback
 void GameScene::menuCloseCallback(Ref* pSender)
 {
-    PomeloNetwork::getInstance()->disconnect();
+    if (gameType == E_ONLINE) {
+        PomeloNetwork::getInstance()->disconnect();
+    }
     Director::getInstance()->popToRootScene();
 }
 
@@ -210,32 +264,18 @@ void GameScene::onTouchMoved(Touch* touch, Event* event)
     
     Vec2 translation = touchLocation - oldTouchLocation;
     
-//    if(std::abs(translation.x)> 1.0f || std::abs(translation.y) > 1.0f){
-//    
-//        Vec2 limitPosition = this->limitPosition(translation);
-//        
-//        Json::Value value;
-//        value["x"] = limitPosition.x;
-//        value["y"] = limitPosition.y;
-//        std::string msg = value.toStyledString();
-//        
-//        PomeloNetwork::getInstance()->request(RouteMove, msg, ExtraDataMove);
-//        
-//        
-//        playerA->setPosition(limitPosition);//限制在屏幕范围内
-//        
-//    }
-    
     Vec2 limitPosition = this->limitPosition(translation);
     
-    Json::Value value;
-    value["x"] = limitPosition.x;
-    value["y"] = limitPosition.y;
-    std::string msg = value.toStyledString();
-    
-    PomeloNetwork::getInstance()->request(RouteMove, msg, ExtraDataMove);
-    
-    
+    if (gameType == E_ONLINE) {
+        
+        Json::Value value;
+        value["x"] = limitPosition.x;
+        value["y"] = limitPosition.y;
+        std::string msg = value.toStyledString();
+        PomeloNetwork::getInstance()->request(RouteMove, msg.c_str(), ExtraDataMove);
+        
+    }
+
     playerA->setPosition(limitPosition);//限制在屏幕范围内
     
 }

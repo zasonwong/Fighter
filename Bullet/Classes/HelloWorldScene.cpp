@@ -81,6 +81,8 @@ void HelloWorld::onlineGameCallback(Ref* pSender)
 void HelloWorld::singleGameCallback(Ref* pSender)
 {
     Scene *pScene = GameScene::createScene();
+    GameScene::setGameType(E_SINGLE);
+    
     Director::getInstance()->pushScene(pScene);
 }
 

@@ -23,6 +23,8 @@ static const char * RespOnAdd = "onAdd";//加入
 static const char * RespOnStart = "onStart";//开始
 static const char * RespOnMove = "onMove";//开始
 
+static const char * RouteGateEnter = "gate.gateHandler.queryEntry";
+static const char * RouteConnectorEnter = "connector.entryHandler.enter";
 static const char * RouteMove = "chat.chatHandler.move";
 
 #define Title_Label_Font_Size   20
