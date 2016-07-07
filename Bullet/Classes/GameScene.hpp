@@ -63,7 +63,7 @@ private:
     void loadPlayer();
     void loadBackground();
     void loadBullet();
-    void fireBullet();
+    void updateBullet();
     void resetBullet();
     
     cocos2d::Vec2 limitPosition(cocos2d::Vec2 newPos);

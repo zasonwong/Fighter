@@ -59,7 +59,7 @@ bool GameScene::init()
         return false;
     }
 
-    bulletSpeed = 15;
+    bulletSpeed = 8;
     
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
@@ -213,26 +213,46 @@ Vec2 GameScene::limitPosition(Vec2 newPos)
 
 void GameScene::update(float delta)
 {
-    this->fireBullet();
+    
+    updateBullet();
+    
+//    if (gameType == E_SINGLE) {
+//        
+//        if (playerA)
+//            playerA->update(delta);
+//        
+//    }else if(gameType == E_ONLINE){
+//        
+//        if (playerA)
+//            playerA->update(delta);
+//        if (playerB)
+//            playerB->update(delta);
+//
+//    }
+    
 }
 
-void GameScene::fireBullet()
+void GameScene::updateBullet()
 {
     bullet->setPosition(Vec2(bullet->getPositionX(),bullet->getPositionY() + bulletSpeed));
     
-    if (bullet->getPositionY()>origin.x + visibleSize.height - Padding) {
+    if (bullet->getPositionY() > origin.y + visibleSize.height) {
         resetBullet();
     }
 }
 
 void GameScene::resetBullet()
 {
-    bulletSpeed = (460-(playerA->getPositionY() + 50))/15;
-    if (bulletSpeed<5)
+    bulletSpeed = (visibleSize.height-(playerA->getPositionY()))/18;
+    
+    if (bulletSpeed <5 )
     {
-        bulletSpeed=5;
+        bulletSpeed = 5;
     }
-    bullet->setPosition(Vec2(playerA->getPositionX(),playerA->getPositionY()+50));
+    
+    CCLOG("## bullet speed: %d", bulletSpeed);
+    
+    bullet->setPosition(Vec2(playerA->getPositionX(),playerA->getPositionY() + playerA->getContentSize().height / 2.0f + 5.0f));
 }
 
 
