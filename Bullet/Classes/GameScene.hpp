@@ -59,10 +59,13 @@ private:
     
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;
+    cocos2d::Vec2 vfinalPos;
     
     cocos2d::Menu *overMenu;
     
     int bulletSpeed;
+    float updatePTime;
+    
     
     GameScene();
     
@@ -79,6 +82,7 @@ private:
     void playPlaneBlowupAnimation();
     void clear();
     void restart(cocos2d::Ref *pSender);
+    void updatePosition(float x, float y);
     
     cocos2d::Vec2 limitPosition(cocos2d::Vec2 newPos);
     cocos2d::Vector<EnemyPlane *> enemyVector;

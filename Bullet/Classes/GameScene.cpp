@@ -30,7 +30,9 @@ origin(Vec2::ZERO),
 bullet(NULL),
 bulletSpeed(0),
 gameType(E_SINGLE),
-isGameOver(true)
+isGameOver(true),
+updatePTime(0.0),
+vfinalPos(Vec2::ZERO)
 {
     
 }
@@ -194,6 +196,10 @@ void GameScene::loadPlayer()
 
 void GameScene::loadBullet()
 {
+    if (gameType == E_ONLINE) {
+        return;
+    }
+    
     bullet = Sprite::createWithSpriteFrameName("bullet1.png");
     bullet->setAnchorPoint(Vec2(0.5,0.5));
     this->addChild(bullet);
@@ -271,6 +277,14 @@ void GameScene::restart(cocos2d::Ref *pSender)
     
 }
 
+void GameScene::updatePosition(float x, float y)
+{
+    
+    vfinalPos = Vec2(x, y);
+
+}
+
+
 ////////// update
 
 void GameScene::update(float delta)
@@ -280,29 +294,36 @@ void GameScene::update(float delta)
         return;
     }
     
+    if (gameType == E_ONLINE) {
+        
+        updatePTime += delta;
+        
+        if (updatePTime > 1 / 24.0f) {
+            
+            updatePTime = 0.0f;
+            playerB->stopAllActions();
+            auto actionTo = MoveTo::create( 1 / 25.0f, vfinalPos);
+            playerB->runAction(actionTo);
+            
+        }
+        
+        return;
+    }
+    
     updateBullet();
     loadEnemyPlane(delta);
     updateEnemyPlane(delta);
     collisionDetect();
     
-//    if (gameType == E_SINGLE) {
-//        
-//        if (playerA)
-//            playerA->update(delta);
-//        
-//    }else if(gameType == E_ONLINE){
-//        
-//        if (playerA)
-//            playerA->update(delta);
-//        if (playerB)
-//            playerB->update(delta);
-//
-//    }
-    
 }
 
 void GameScene::updateBullet()
 {
+    
+    if (!bullet) {
+        return;
+    }
+    
     bullet->setPosition(Vec2(bullet->getPositionX(),bullet->getPositionY() + bulletSpeed));
     
     if (bullet->getPositionY() > origin.y + visibleSize.height) {
@@ -426,7 +447,6 @@ void GameScene::playPlaneBlowupAnimation()
     
 }
 
-
 ////////// callback
 void GameScene::menuCloseCallback(Ref* pSender)
 {
@@ -486,7 +506,7 @@ void GameScene::onUpdatePosition(float x, float y)
         return;
     }
     
-    pInstance->playerB->setPosition(x, y);
+    pInstance->updatePosition(x, y);
     
 }
 
