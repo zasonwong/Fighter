@@ -11,6 +11,7 @@
 #include "PomeloNetwork.hpp"
 #include "json.h"
 #include "User.hpp"
+#include "PopView.hpp"
 
 USING_NS_CC;
 
@@ -28,7 +29,8 @@ visibleSize(Size::ZERO),
 origin(Vec2::ZERO),
 bullet(NULL),
 bulletSpeed(0),
-gameType(E_SINGLE)
+gameType(E_SINGLE),
+isGameOver(true)
 {
     
 }
@@ -59,7 +61,14 @@ bool GameScene::init()
         return false;
     }
 
+    
     bulletSpeed = 8;
+    
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
+    listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
+    listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
@@ -99,6 +108,11 @@ bool GameScene::init()
     return true;
 }
 
+void GameScene::initData()
+{
+    bulletSpeed = 8;
+}
+
 ///////////private methods
 
 void GameScene::startStep(float dt)
@@ -124,11 +138,9 @@ void GameScene::startStep(float dt)
 void GameScene::startGame()
 {
     
-    auto listener = EventListenerTouchOneByOne::create();
-    listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
-    listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
-    listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    initData();
+    
+    isGameOver = false;
 
     loadBackground();
     loadPlayer();
@@ -161,17 +173,18 @@ void GameScene::loadPlayer()
     }else if(gameType == E_ONLINE){
     
         playerA = Player::createWithSpriteFrameName("hero_fly_1.png");
-        this->addChild(playerA);
-        
         playerB = Player::createWithSpriteFrameName("hero_fly_1.png");
-        this->addChild(playerB);
         
         if (User::getInstance()->isMain) {
             playerA->setPosition(Vec2(origin.x + visibleSize.width / 4.0f, origin.y + Padding));
             playerB->setPosition(Vec2(origin.x + visibleSize.width / 4.0f * 3.0f, origin.y + Padding));
+            this->addChild(playerA, 2);
+            this->addChild(playerB, 1);
         }else{
             playerA->setPosition(Vec2(origin.x + visibleSize.width / 4.0f * 3.0f, origin.y + Padding));
             playerB->setPosition(Vec2(origin.x + visibleSize.width / 4.0f, origin.y + Padding));
+            this->addChild(playerB, 2);
+            this->addChild(playerA, 1);
         }
     
     }
@@ -209,12 +222,68 @@ Vec2 GameScene::limitPosition(Vec2 newPos)
     return retval;
 }
 
+void GameScene::gameOver()
+{
+    
+    isGameOver = true;
+    this->unscheduleUpdate();
+    
+}
+
+void GameScene::resetBullet()
+{
+    bulletSpeed = (visibleSize.height-(playerA->getPositionY()))/18;
+    
+    if (bulletSpeed <5 )
+    {
+        bulletSpeed = 5;
+    }
+    
+    CCLOG("## bullet speed: %d", bulletSpeed);
+    
+    bullet->setPosition(Vec2(playerA->getPositionX(),playerA->getPositionY() + playerA->getContentSize().height / 2.0f + 5.0f));
+}
+
+void GameScene::clear()
+{
+    
+    playerA->removeFromParent();
+
+    auto overItem = MenuItemFont::create("Game Over", nullptr);
+    overItem->setFontSize(Title_Label_Font_Size);
+    
+    auto restartItem = MenuItemFont::create("Restart", CC_CALLBACK_1(GameScene::restart, this));
+    
+    overMenu = Menu::create(overItem, restartItem, nullptr);
+    addChild(overMenu);
+    overMenu->alignItemsVertically();
+    
+    auto s = Director::getInstance()->getWinSize();
+    overMenu->setPosition(Vec2(s.width/2, s.height/2));
+    
+}
+
+void GameScene::restart(cocos2d::Ref *pSender)
+{
+    
+    overMenu->removeFromParent();
+    startGame();
+    
+}
+
 ////////// update
 
 void GameScene::update(float delta)
 {
+ 
+    if (isGameOver) {
+        return;
+    }
     
     updateBullet();
+    loadEnemyPlane(delta);
+    updateEnemyPlane(delta);
+    collisionDetect();
     
 //    if (gameType == E_SINGLE) {
 //        
@@ -241,18 +310,120 @@ void GameScene::updateBullet()
     }
 }
 
-void GameScene::resetBullet()
+void GameScene::updateEnemyPlane(float delta)
 {
-    bulletSpeed = (visibleSize.height-(playerA->getPositionY()))/18;
+
+    Vector<EnemyPlane *>::iterator iter = enemyVector.begin();
     
-    if (bulletSpeed <5 )
-    {
-        bulletSpeed = 5;
+    for  ( ; iter != enemyVector.end();) {
+        
+        EnemyPlane *enemy = *iter;
+        enemy->update(delta);
+        
+        if (enemy->getPositionY() < VisibleOrigin.y - enemy->getContentSize().height) {
+            enemy->removeFromParent();
+            iter = enemyVector.erase(iter);
+        }else{
+            iter++;
+        }
+        
     }
     
-    CCLOG("## bullet speed: %d", bulletSpeed);
+}
+
+void GameScene::loadEnemyPlane(float delta)
+{
     
-    bullet->setPosition(Vec2(playerA->getPositionX(),playerA->getPositionY() + playerA->getContentSize().height / 2.0f + 5.0f));
+    static float timePass = 0.0f;
+    timePass += delta;
+    
+    if (timePass > 2.0f) {
+        
+        EnemyPlane *enemy = EnemyPlane::createWithSpriteFrameName("enemy1_fly_1.png");
+        this->addChild(enemy, 1);
+        enemyVector.pushBack(enemy);
+        timePass = 0;
+        
+    }
+    
+}
+
+void GameScene::collisionDetect()
+{
+
+    //了弹和乱机碰撞
+    Rect bulletRec = bullet->boundingBox();
+    Vector<EnemyPlane *>::iterator iter = enemyVector.begin();
+    for  ( ; iter != enemyVector.end();) {
+        
+        EnemyPlane *enemy = *iter;
+        if (bulletRec.intersectsRect(enemy->boundingBox())) {//打到飞机
+            this->resetBullet();
+            enemy->removeFromParent();
+            iter = enemyVector.erase(iter);
+        }else{
+            iter++;
+        }
+        
+    }
+    
+    //乱机和飞机
+    Rect playerRec = playerA->boundingBox();
+    
+    Vector<EnemyPlane *>::iterator iiter = enemyVector.begin();
+    for  ( ; iiter != enemyVector.end();) {
+        
+        EnemyPlane *enemy = *iiter;
+        if (playerRec.intersectsRect(enemy->boundingBox())) {//打到飞机
+            
+            this->resetBullet();
+            enemy->removeFromParent();
+            bullet->removeFromParent();
+            
+            iiter = enemyVector.erase(iiter);
+            
+            if (gameType == E_SINGLE) {
+                
+                playPlaneBlowupAnimation();
+                gameOver();
+                
+            }
+            
+            break;
+            
+        }else{
+            iiter++;
+        }
+        
+    }
+    
+}
+
+////////// animate
+
+void GameScene::playPlaneBlowupAnimation()
+{
+    
+    Vector<SpriteFrame*> actionVector;
+    for (int i = 1; i<=4 ; i++ ) {
+        
+        char str[20];
+        sprintf(str, "hero_blowup_%i.png",i);
+        SpriteFrame* frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(str);
+        actionVector.pushBack(frame);
+        
+    }
+    
+    //将数组转化为动画序列,换帧间隔0.1秒
+    Animation* animPlayer = Animation::createWithSpriteFrames(actionVector, 0.1f);
+    //生成动画播放的行为对象
+    Animate* actPlayer = Animate::create(animPlayer);
+    //清空缓存数组
+    actionVector.clear();
+    
+    auto action_cb = CallFunc::create(this, CC_CALLFUNC_SELECTOR(GameScene::clear));
+    playerA->runAction(Sequence::create(actPlayer, action_cb, nullptr));
+    
 }
 
 
@@ -275,6 +446,10 @@ void GameScene::onTouchMoved(Touch* touch, Event* event)
 {
     
 //    CCLOG("GameScene::onTouchMoved id = %d, x = %f, y = %f", touch->getID(), touch->getLocation().x, touch->getLocation().y);
+    
+    if (isGameOver) {
+        return;
+    }
     
     Vec2 touchLocation = this->convertTouchToNodeSpace(touch);
     Vec2 oldTouchLocation = touch->getPreviousLocationInView();

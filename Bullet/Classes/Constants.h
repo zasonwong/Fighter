@@ -47,6 +47,9 @@ static const char * RouteMove = "chat.chatHandler.move";
 
 #define TIMEOUT  20 
 
+#define VisibleSize (Director::getInstance()->getVisibleSize())
+#define VisibleOrigin (Director::getInstance()->getVisibleOrigin())
+
 
 
 

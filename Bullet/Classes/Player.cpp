@@ -34,7 +34,6 @@ bool Player::initWithSpriteFrameName(const std::string& spriteFrameName)
     return false;
 }
 
-
 void Player::onEnter()
 {
     

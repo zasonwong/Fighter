@@ -76,14 +76,14 @@ bool PreStartScene::init()
     playerBSprite = Sprite::createWithSpriteFrameName("hero_fly_1.png");
     playerBSprite->setPosition(origin.x + visibleSize.width/2 + 50.0f, origin.y + visibleSize.height / 1.5);
     this->addChild(playerBSprite);
-    playerBSprite->setOpacity(0);//隐藏
+    playerBSprite -> setVisible(false);
     
     playerBLabel = Label::createWithTTF("", "fonts/Marker Felt.ttf", Tiny_Font_Size);
     playerBLabel->setPosition(Vec2(playerBSprite->getPosition().x,
                              playerBSprite->getPosition().y - playerBSprite->getContentSize().height / 2.0f - Font_Padding));
     
     this->addChild(playerBLabel);
-    playerBLabel->setOpacity(0);//隐藏
+    playerBLabel -> setVisible(false);
     
     
     auto readyItemLabel = Label::createWithTTF("Ready", "fonts/Marker Felt.ttf", Button_Label_Font_Size);
@@ -99,7 +99,8 @@ bool PreStartScene::init()
     closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
                                 origin.y + closeItem->getContentSize().height/2));
     
-    auto menu = Menu::create(readyItem,closeItem, NULL);
+//    auto menu = Menu::create(readyItem,closeItem, NULL);
+    auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu);
     
@@ -151,8 +152,8 @@ void PreStartScene::menuCloseCallback(Ref* pSender)
 void PreStartScene::onUpdateCompeteName(std::string name)
 {
     
-    pInstance->playerBSprite->setOpacity(1.0f);
-    pInstance->playerBLabel->setOpacity(1.0f);
+    pInstance->playerBSprite->setVisible(true);
+    pInstance->playerBLabel->setVisible(true);
     pInstance->playerBLabel->setString(name);
     
 }

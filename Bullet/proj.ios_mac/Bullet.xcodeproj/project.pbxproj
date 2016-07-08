@@ -71,9 +71,11 @@
 		863BF36A1D2CFF0E00063CA0 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 863BF3691D2CFF0E00063CA0 /* jsoncpp.cpp */; };
 		863BF36E1D2D0CD500063CA0 /* User.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 863BF36C1D2D0CD500063CA0 /* User.cpp */; };
 		863BF3711D2D268000063CA0 /* GatewayNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 863BF36F1D2D268000063CA0 /* GatewayNetwork.cpp */; };
+		863BF37C1D2F628700063CA0 /* EnemyPlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 863BF37A1D2F628700063CA0 /* EnemyPlane.cpp */; };
 		86950BE81D2B568500B6F597 /* gameArts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86950BE61D2B568500B6F597 /* gameArts.plist */; };
 		86950BE91D2B568500B6F597 /* gameArts.png in Resources */ = {isa = PBXBuildFile; fileRef = 86950BE71D2B568500B6F597 /* gameArts.png */; };
 		86950BF01D2B941A00B6F597 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86950BEE1D2B941A00B6F597 /* Player.cpp */; };
+		86C4B1191D2F8EE10002AE59 /* PopView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86C4B1171D2F8EE10002AE59 /* PopView.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712471292920000B8313A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB412928DE900B8313A /* libz.dylib */; };
 		BF1C47F01293687400B63C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1C47EA1293683800B63C5D /* QuartzCore.framework */; };
@@ -276,10 +278,14 @@
 		863BF36D1D2D0CD500063CA0 /* User.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = User.hpp; sourceTree = "<group>"; };
 		863BF36F1D2D268000063CA0 /* GatewayNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GatewayNetwork.cpp; sourceTree = "<group>"; };
 		863BF3701D2D268000063CA0 /* GatewayNetwork.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GatewayNetwork.hpp; sourceTree = "<group>"; };
+		863BF37A1D2F628700063CA0 /* EnemyPlane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EnemyPlane.cpp; sourceTree = "<group>"; };
+		863BF37B1D2F628700063CA0 /* EnemyPlane.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EnemyPlane.hpp; sourceTree = "<group>"; };
 		86950BE61D2B568500B6F597 /* gameArts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = gameArts.plist; sourceTree = "<group>"; };
 		86950BE71D2B568500B6F597 /* gameArts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gameArts.png; sourceTree = "<group>"; };
 		86950BEE1D2B941A00B6F597 /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
 		86950BEF1D2B941A00B6F597 /* Player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Player.hpp; sourceTree = "<group>"; };
+		86C4B1171D2F8EE10002AE59 /* PopView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PopView.cpp; sourceTree = "<group>"; };
+		86C4B1181D2F8EE10002AE59 /* PopView.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PopView.hpp; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BF170DB412928DE900B8313A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BF1C47EA1293683800B63C5D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -422,6 +428,7 @@
 		46880B8319C43A87006E1F66 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				86C4B1151D2F8E8B0002AE59 /* UI */,
 				863BF3771D2DF31100063CA0 /* Global */,
 				863BF3761D2DF30000063CA0 /* Entity */,
 				863BF3741D2DF2D700063CA0 /* Network */,
@@ -720,6 +727,8 @@
 				86950BEF1D2B941A00B6F597 /* Player.hpp */,
 				863BF36C1D2D0CD500063CA0 /* User.cpp */,
 				863BF36D1D2D0CD500063CA0 /* User.hpp */,
+				863BF37A1D2F628700063CA0 /* EnemyPlane.cpp */,
+				863BF37B1D2F628700063CA0 /* EnemyPlane.hpp */,
 			);
 			name = Entity;
 			sourceTree = "<group>";
@@ -730,6 +739,15 @@
 				863BEB261D2BA2E200063CA0 /* Constants.h */,
 			);
 			name = Global;
+			sourceTree = "<group>";
+		};
+		86C4B1151D2F8E8B0002AE59 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				86C4B1171D2F8EE10002AE59 /* PopView.cpp */,
+				86C4B1181D2F8EE10002AE59 /* PopView.hpp */,
+			);
+			name = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -881,6 +899,8 @@
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
 				863BF3631D2BD59800063CA0 /* PomeloNetwork.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
+				86C4B1191D2F8EE10002AE59 /* PopView.cpp in Sources */,
+				863BF37C1D2F628700063CA0 /* EnemyPlane.cpp in Sources */,
 				863BEB241D2BA0A800063CA0 /* PreStartScene.cpp in Sources */,
 				863BF36A1D2CFF0E00063CA0 /* jsoncpp.cpp in Sources */,
 				863BF0EF1D2BCF1E00063CA0 /* NewPomelo.m in Sources */,
