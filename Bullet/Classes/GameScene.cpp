@@ -32,7 +32,8 @@ bulletSpeed(0),
 gameType(E_SINGLE),
 isGameOver(true),
 updatePTime(0.0),
-vfinalPos(Vec2::ZERO)
+vfinalPos(Vec2::ZERO),
+playerSizeWidth(0)
 {
     
 }
@@ -158,7 +159,7 @@ void GameScene::loadBackground()
     bg->setAnchorPoint(Vec2(0.5, 0.0f));
     bg->setPosition(origin.x + visibleSize.width / 2.0f, origin.y);
     CCLOG("Scale: %f", Director::getInstance()->getContentScaleFactor());
-    bg->setScale(Director::getInstance()->getContentScaleFactor());
+    bg->setScale(1.5);
     this->addChild(bg,-1);
     
 }
@@ -191,6 +192,7 @@ void GameScene::loadPlayer()
     
     }
 
+    playerSizeWidth = playerA->getContentSize().width;
     
 }
 

@@ -26,6 +26,7 @@ class GameScene : public cocos2d::Layer
 public:
     
     eGameType gameType;
+    float playerSizeWidth;
     
     static cocos2d::Scene* createScene();
     
@@ -51,7 +52,7 @@ private:
     
     int countDown;
     bool isGameOver;
-
+    
     Player *playerA; // 玩家A飞机
     Player *playerB; // 玩家B飞机
     

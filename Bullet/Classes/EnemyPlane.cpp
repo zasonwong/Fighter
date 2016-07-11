@@ -8,6 +8,7 @@
 
 #include "EnemyPlane.hpp"
 #include "Constants.h"
+#include "GameScene.hpp"
 
 USING_NS_CC;
 
@@ -45,7 +46,7 @@ void EnemyPlane::onEnter()
     
     Sprite::onEnter();
     this->speed = arc4random() % 4 + 1;
-    this->setPosition(Vec2((arc4random()%(int)(VisibleSize.width) - 10) + VisibleOrigin.x + 10, VisibleOrigin.y + VisibleSize.height + 10.0f));
+    this->setPosition(Vec2((arc4random()%(int)(VisibleSize.width) - GameScene::pInstance -> playerSizeWidth) + VisibleOrigin.x + (GameScene::pInstance -> playerSizeWidth / 2.0f), VisibleOrigin.y + VisibleSize.height + this->getContentSize().height / 2));
     
 }
 

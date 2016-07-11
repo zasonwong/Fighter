@@ -76,6 +76,8 @@
 		86950BE91D2B568500B6F597 /* gameArts.png in Resources */ = {isa = PBXBuildFile; fileRef = 86950BE71D2B568500B6F597 /* gameArts.png */; };
 		86950BF01D2B941A00B6F597 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86950BEE1D2B941A00B6F597 /* Player.cpp */; };
 		86C4B1191D2F8EE10002AE59 /* PopView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86C4B1171D2F8EE10002AE59 /* PopView.cpp */; };
+		86C4B1221D336E850002AE59 /* gameArts-hd.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86C4B1201D336E850002AE59 /* gameArts-hd.plist */; };
+		86C4B1231D336E850002AE59 /* gameArts-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 86C4B1211D336E850002AE59 /* gameArts-hd.png */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712471292920000B8313A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB412928DE900B8313A /* libz.dylib */; };
 		BF1C47F01293687400B63C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1C47EA1293683800B63C5D /* QuartzCore.framework */; };
@@ -286,6 +288,8 @@
 		86950BEF1D2B941A00B6F597 /* Player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Player.hpp; sourceTree = "<group>"; };
 		86C4B1171D2F8EE10002AE59 /* PopView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PopView.cpp; sourceTree = "<group>"; };
 		86C4B1181D2F8EE10002AE59 /* PopView.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PopView.hpp; sourceTree = "<group>"; };
+		86C4B1201D336E850002AE59 /* gameArts-hd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "gameArts-hd.plist"; sourceTree = "<group>"; };
+		86C4B1211D336E850002AE59 /* gameArts-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gameArts-hd.png"; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BF170DB412928DE900B8313A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BF1C47EA1293683800B63C5D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -413,6 +417,8 @@
 		46880B7519C43A67006E1F66 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				86C4B1201D336E850002AE59 /* gameArts-hd.plist */,
+				86C4B1211D336E850002AE59 /* gameArts-hd.png */,
 				86950BE61D2B568500B6F597 /* gameArts.plist */,
 				86950BE71D2B568500B6F597 /* gameArts.png */,
 				521A8EA819F11F5000D177D7 /* fonts */,
@@ -864,7 +870,9 @@
 				5087E78217EB970100C73F5D /* Icon-144.png in Resources */,
 				3EACC98F19EE6D4300EB3C5E /* res in Resources */,
 				50EF629817ECD46A001EB2F8 /* Icon-80.png in Resources */,
+				86C4B1221D336E850002AE59 /* gameArts-hd.plist in Resources */,
 				5087E78417EB970100C73F5D /* Icon-57.png in Resources */,
+				86C4B1231D336E850002AE59 /* gameArts-hd.png in Resources */,
 				5087E77E17EB970100C73F5D /* Default.png in Resources */,
 				521A8E6419F0C34300D177D7 /* Default-667h@2x.png in Resources */,
 				46880B7B19C43A67006E1F66 /* CloseNormal.png in Resources */,
